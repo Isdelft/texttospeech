@@ -7,8 +7,8 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-
 import java.util.List;
+
 public class GoogleTextToSpeech {
 
 	/**
@@ -18,7 +18,7 @@ public class GoogleTextToSpeech {
 		   snippets - a list of parameter strings that ar eeach less than or
 					  equal to 100 characters
 	**/
-	public static void makeAudio(String destination, String language,
+	private static void makeAudio(String destination, String language,
 			List<String> snippets) {
 		try {
 			//byte array that is 1 MB of the file
@@ -72,7 +72,7 @@ public class GoogleTextToSpeech {
 	This takes in a string of text, converts it to URL parameter form by replacing all the spaces with '+', and separates them into an ArrayList of strings with each string in the ArrayList having a max of 100 characters including the '+'. 
 	@param text - A string that you want to be converted to a mp3 using Google's text to speech
 	**/
-	public static ArrayList<String> getParams(String text) {
+	private static ArrayList<String> getParams(String text) {
 		//replace all the spaces with '+' 
 		String paramText = text.replaceAll(" ", "+");
 		//starting index of the current substring in relation to the string passed in
@@ -105,17 +105,21 @@ public class GoogleTextToSpeech {
 		return result;
 	}
 
-	public static int getSnippetEnd(String text, int startIndex) {
-		//set the substring; if there is still 100 characters left in the origial text starting from the startIndex, 
-		//set the substring to be 100 cahracters. otherwise, just get the rest of the string that is left starting at the startIndex
-		String subtext = (text.substring(startIndex).length() > 100) ? text.substring(startIndex, startIndex + 100) : 
-		                                                               text.substring(startIndex);
-		//the end index initially set as the length of the substring (you dont subtract by 1 because this is used as the 2nd parameter 
-		//of the String.substring(int,int) method used in getParams(String) to create the substring to add to the list
+	private static int getSnippetEnd(String text, int startIndex) {
+		//set the substring; if there is still 100 characters left in the origial text starting from the 
+		//startIndex, set the substring to be 100 cahracters. otherwise, just get the rest of the string 
+		//that is left starting at the startIndex
+		String subtext = (text.substring(startIndex).length() > 100) ? 
+		                   text.substring(startIndex, startIndex + 100) : 
+		                   text.substring(startIndex);
+		//the end index initially set as the length of the substring (you dont subtract by 1 because this is used 
+		//as the 2nd parameter of the String.substring(int,int) method used in getParams(String) to create the 
+		//substring to add to the list
 		int end = subtext.length();
-		//if there is <=100 characters in the substring, you are done. Otherise, you have to make sure that you aren't in the middle 
-		//of the word. IF you are, then decrement the 'end' index until you reach a '+' sigh. Then simply remove the '+' sign, and 
-		//you will not have any problems with word being cut off in the middle whlie parsing
+		//if there is <=100 characters in the substring, you are done. Otherise, you have to make sure that you 
+		//aren't in the middle of the word. IF you are, then decrement the 'end' index until you reach a '+' sigh. 
+		//Then simply remove the '+' sign, and you will not have any problems with word being cut off in the middle
+		//whlie parsing
 		if (text.substring(startIndex).length() > 100) {
 				//while the last character is not a + sign, remove the last character of the substring
 				while (!subtext.substring(subtext.length() - 1, subtext.length()).equals("+")) {
@@ -130,7 +134,8 @@ public class GoogleTextToSpeech {
 		return end + startIndex;
 	}
 	public static void textToSpeech(String text, String language, String outputName){
-		//convert the string to have '+' where there are spaces and create 100 charcter or less snippets based off the string
+		//convert the string to have '+' where there are spaces and create 100 charcter 
+		//or less snippets based off the string
 		ArrayList<String> paramSnippets = getParams(text);
 		//print out the snippets
 		for (String snippet : paramSnippets) {
